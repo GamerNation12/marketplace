@@ -5,7 +5,7 @@ import semver from "semver";
 
 const Spicetify = window.Spicetify;
 
-import { EXTENSIONS_URL, THEMES_URL, ITEMS_PER_REQUEST, LATEST_RELEASE_URL, LOCALSTORAGE_KEYS, MARKETPLACE_VERSION } from "../constants";
+import { EXTENSIONS_URL, ITEMS_PER_REQUEST, LATEST_RELEASE_URL, LOCALSTORAGE_KEYS, MARKETPLACE_VERSION, THEMES_URL } from "../constants";
 import { fetchCssSnippets, getBlacklist } from "../logic/FetchRemotes";
 import { openModal } from "../logic/LaunchModals";
 import { generateSchemesOptions, generateSortOptions, getLocalStorageDataFromKey, injectColourScheme, sortCardItems } from "../logic/Utils";
@@ -261,9 +261,13 @@ class Grid extends React.Component<
           this.setState({ version: result.name });
           try {
             this.setState({ newUpdate: semver.gt(result.name, MARKETPLACE_VERSION) });
-          } catch (err) { console.error(err); }
+          } catch (err) {
+            console.error(err);
+          }
         },
-        (error) => { console.error("Failed to check for updates", error); }
+        (error) => {
+          console.error("Failed to check for updates", error);
+        }
       );
 
     this.gridUpdateTabs = this.updateTabs.bind(this);
@@ -305,7 +309,9 @@ class Grid extends React.Component<
     this.setState({ activeThemeKey: themeKey });
   }
 
-  getActiveScheme() { return this.state.activeScheme; }
+  getActiveScheme() {
+    return this.state.activeScheme;
+  }
 
   render() {
     const { t } = this.props;
@@ -315,26 +321,49 @@ class Grid extends React.Component<
           <div className="marketplace-header__left">
             {this.state.newUpdate ? (
               <button type="button" title={t("grid.newUpdate")} className="marketplace-header-icon-button" onClick={() => openModal("UPDATE")}>
-                <DownloadIcon />&nbsp;{this.state.version}
+                <DownloadIcon />
+                &nbsp;{this.state.version}
               </button>
             ) : null}
             <h2 className="marketplace-header__label">{t("grid.sort.label")}</h2>
-            <SortBox onChange={(value) => this.updateSort(value)} sortBoxOptions={generateSortOptions(t)} sortBySelectedFn={(a) => a.key === this.CONFIG.sort} />
+            <SortBox
+              onChange={(value) => this.updateSort(value)}
+              sortBoxOptions={generateSortOptions(t)}
+              sortBySelectedFn={(a) => a.key === this.CONFIG.sort}
+            />
           </div>
           <div className="marketplace-header__right">
             {this.CONFIG.visual.themeDevTools ? (
               <Tooltip label={t("devTools.title")} renderInline={true} placement="bottom">
-                <button type="button" className="marketplace-header-icon-button" onClick={() => openModal("THEME_DEV_TOOLS")}><ThemeDeveloperToolsIcon /></button>
+                <button type="button" className="marketplace-header-icon-button" onClick={() => openModal("THEME_DEV_TOOLS")}>
+                  <ThemeDeveloperToolsIcon />
+                </button>
               </Tooltip>
             ) : null}
             {this.state.activeScheme ? (
-              <SortBox onChange={(value) => this.updateColourSchemes(this.state.schemes, value)} sortBoxOptions={generateSchemesOptions(this.state.schemes)} sortBySelectedFn={(a) => a.key === this.getActiveScheme()} />
+              <SortBox
+                onChange={(value) => this.updateColourSchemes(this.state.schemes, value)}
+                sortBoxOptions={generateSchemesOptions(this.state.schemes)}
+                sortBySelectedFn={(a) => a.key === this.getActiveScheme()}
+              />
             ) : null}
             <div className="searchbar--bar__wrapper">
-              <input className="searchbar-bar" type="text" placeholder={`${t("grid.search")} ${t(`tabs.${this.CONFIG.activeTab}`)}...`} value={this.state.searchValue} onChange={(e) => this.setState({ searchValue: e.target.value })} />
+              <input
+                className="searchbar-bar"
+                type="text"
+                placeholder={`${t("grid.search")} ${t(`tabs.${this.CONFIG.activeTab}`)}...`}
+                value={this.state.searchValue}
+                onChange={(e) => this.setState({ searchValue: e.target.value })}
+              />
             </div>
             <Tooltip label={t("settings.title")} renderInline={true} placement="bottom">
-              <button type="button" className="marketplace-header-icon-button" onClick={() => openModal("SETTINGS", this.CONFIG, this.updateAppConfig)}><SettingsIcon /></button>
+              <button
+                type="button"
+                className="marketplace-header-icon-button"
+                onClick={() => openModal("SETTINGS", this.CONFIG, this.updateAppConfig)}
+              >
+                <SettingsIcon />
+              </button>
             </Tooltip>
           </div>
         </div>
@@ -364,7 +393,11 @@ class Grid extends React.Component<
             return (
               <div className="marketplace-content" key={cardType.handle}>
                 <h2 className="marketplace-card-type-heading">{t(`tabs.${cardType.name}`)}</h2>
-                <div className="marketplace-grid main-gridContainer-gridContainer main-gridContainer-fixedWidth" data-tab={this.CONFIG.activeTab} data-card-type={t(`tabs.${cardType.name}`)}>
+                <div
+                  className="marketplace-grid main-gridContainer-gridContainer main-gridContainer-fixedWidth"
+                  data-tab={this.CONFIG.activeTab}
+                  data-card-type={t(`tabs.${cardType.name}`)}
+                >
                   {cardsOfType}
                 </div>
               </div>
@@ -373,12 +406,20 @@ class Grid extends React.Component<
           return null;
         })}
         {this.CONFIG.activeTab === "Snippets" ? (
-          <Button classes={["marketplace-add-snippet-btn"]} onClick={() => openModal("ADD_SNIPPET")}>+ {t("grid.addCSS")}</Button>
+          <Button classes={["marketplace-add-snippet-btn"]} onClick={() => openModal("ADD_SNIPPET")}>
+            + {t("grid.addCSS")}
+          </Button>
         ) : null}
         <footer className="marketplace-footer">
           {!this.state.endOfList ? (
-            this.state.rest && this.state.cards.length > 0 ? <LoadMoreIcon onClick={this.loadMore.bind(this)} /> : <LoadingIcon />
-          ) : <div style={{ height: "64px" }} />}
+            this.state.rest && this.state.cards.length > 0 ? (
+              <LoadMoreIcon onClick={this.loadMore.bind(this)} />
+            ) : (
+              <LoadingIcon />
+            )
+          ) : (
+            <div style={{ height: "64px" }} />
+          )}
         </footer>
         <TopBarContent switchCallback={this.switchTo.bind(this)} links={this.CONFIG.tabs} activeLink={this.CONFIG.activeTab} />
       </section>
