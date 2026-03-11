@@ -48,3 +48,11 @@ export const BLACKLIST_URL = "https://raw.githubusercontent.com/GamerNation12/ma
 export const RELEASES_URL = "https://github.com/GamerNation12/marketplace/releases";
 
 export const LATEST_RELEASE_URL = "https://api.github.com/repos/GamerNation12/marketplace/releases/latest";
+
+export const EXTENSIONS_URL = "https://raw.githubusercontent.com/GamerNation12/marketplace/main/resources/extensions.json";
+
+export const EXTENSIONS_PAGE_URL = "https://github.com/GamerNation12/marketplace/blob/main/resources/extensions.json";
+
+export const THEMES_URL = "https://raw.githubusercontent.com/GamerNation12/marketplace/main/resources/themes.json";
+
+export const THEMES_PAGE_URL = "https://github.com/GamerNation12/marketplace/blob/main/resources/themes.json";

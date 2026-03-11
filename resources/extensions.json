@@ -1,0 +1,16 @@
+[
+  {
+    "name": "Release date",
+    "description": "This extension adds a release date for the currently playing track next to the artist name(s)",
+    "preview": "resources/assets/snippets/smooth.png",
+    "main": "resources/extensions/release_date.js",
+    "readme": "resources/extensions/README.md",
+    "authors": [
+      {
+        "name": "GamerNation12",
+        "url": "https://github.com/GamerNation12"
+      }
+    ],
+    "tags": ["current song", "now playing", "release date", "spotify", "spicetify"]
+  }
+]
