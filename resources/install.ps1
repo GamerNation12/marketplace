@@ -102,25 +102,26 @@ try {
 
 Write-Host -Object 'Downloading Marketplace...' -ForegroundColor 'Cyan'
 $marketArchivePath = "$marketAppPath\marketplace.zip"
-$unpackedFolderPath = "$marketAppPath\marketplace-dist"
 $Parameters = @{
-  # MODIFIED: Now pulls the perfectly packaged zip from the official Spicetify API!
-  Uri             = 'https://github.com/spicetify/marketplace/releases/latest/download/marketplace.zip'
+  # NOW POINTING TO YOUR FORK!
+  Uri             = 'https://github.com/GamerNation12/marketplace/releases/latest/download/marketplace.zip'
   UseBasicParsing = $true
   OutFile         = $marketArchivePath
 }
 Invoke-WebRequest @Parameters
 
 Write-Host -Object 'Unzipping and installing...' -ForegroundColor 'Cyan'
+# MODIFIED: Extracts directly, no more marketplace-dist folder crashing!
 Expand-Archive -Path $marketArchivePath -DestinationPath $marketAppPath -Force
-Move-Item -Path "$unpackedFolderPath\*" -Destination $marketAppPath -Force
-Remove-Item -Path $marketArchivePath, $unpackedFolderPath -Force
+Remove-Item -Path $marketArchivePath -Force
+
 Invoke-Spicetify "config" "custom_apps" "spicetify-marketplace-" "-q"
 Invoke-Spicetify "config" "custom_apps" "marketplace"
 Invoke-Spicetify "config" "inject_css" "1" "replace_colors" "1"
 
 Write-Host -Object 'Downloading placeholder theme...' -ForegroundColor 'Cyan'
 $Parameters = @{
+  # POINTING TO YOUR FORK!
   Uri             = 'https://raw.githubusercontent.com/GamerNation12/marketplace/main/resources/color.ini'
   UseBasicParsing = $true
   OutFile         = "$marketThemePath\color.ini"
