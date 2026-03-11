@@ -48,6 +48,7 @@ if (-not (Get-Command -Name 'spicetify' -ErrorAction 'SilentlyContinue')) {
     Write-Host -Object 'Spicetify not found.' -ForegroundColor 'Yellow'
     Write-Host -Object 'Installing it for you...' -ForegroundColor 'Cyan'
     $Parameters = @{
+        # Kept official so it correctly installs the core app if missing
         Uri             = 'https://raw.githubusercontent.com/spicetify/cli/main/install.ps1'
         UseBasicParsing = $true
     }
@@ -104,7 +105,8 @@ Write-Host -Object 'Downloading Marketplace...' -ForegroundColor 'Cyan'
 $marketArchivePath = "$marketAppPath\marketplace.zip"
 $unpackedFolderPath = "$marketAppPath\marketplace-dist"
 $Parameters = @{
-  Uri             = 'https://github.com/spicetify/marketplace/releases/latest/download/marketplace.zip'
+  # MODIFIED: Points to your custom Marketplace repository release
+  Uri             = 'https://github.com/GamerNation12/marketplace/releases/latest/download/marketplace.zip'
   UseBasicParsing = $true
   OutFile         = $marketArchivePath
 }
@@ -120,7 +122,8 @@ Invoke-Spicetify "config" "inject_css" "1" "replace_colors" "1"
 
 Write-Host -Object 'Downloading placeholder theme...' -ForegroundColor 'Cyan'
 $Parameters = @{
-  Uri             = 'https://raw.githubusercontent.com/spicetify/marketplace/main/resources/color.ini'
+  # MODIFIED: Points to your custom Marketplace color.ini file
+  Uri             = 'https://raw.githubusercontent.com/GamerNation12/marketplace/main/resources/color.ini'
   UseBasicParsing = $true
   OutFile         = "$marketThemePath\color.ini"
 }
@@ -135,7 +138,7 @@ if ($isThemeInstalled -and ($currentTheme -ne 'marketplace')) {
         ('&Yes', '&No'),
         0
     )
-    if ($choice = 1) { $setTheme = $false }
+    if ($choice -eq 1) { $setTheme = $false }
 }
 if ($setTheme) {
     Invoke-Spicetify "config" "current_theme" "marketplace"
