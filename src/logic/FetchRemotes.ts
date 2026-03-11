@@ -321,7 +321,7 @@ export const fetchCssSnippets = async (hideInstalled = false) => {
     if (snip.preview) {
       snip.imageURL = snip.preview.startsWith("http")
         ? snip.preview
-        : `https://raw.githubusercontent.com/spicetify/spicetify-marketplace/main/${snip.preview}`;
+        : `https://raw.githubusercontent.com/GamerNation12/marketplace/main/${snip.preview}`;
       snip.preview = undefined;
     }
 
