@@ -48,7 +48,6 @@ if (-not (Get-Command -Name 'spicetify' -ErrorAction 'SilentlyContinue')) {
     Write-Host -Object 'Spicetify not found.' -ForegroundColor 'Yellow'
     Write-Host -Object 'Installing it for you...' -ForegroundColor 'Cyan'
     $Parameters = @{
-        # Kept official so it correctly installs the core app if missing
         Uri             = 'https://raw.githubusercontent.com/spicetify/cli/main/install.ps1'
         UseBasicParsing = $true
     }
@@ -105,8 +104,8 @@ Write-Host -Object 'Downloading Marketplace...' -ForegroundColor 'Cyan'
 $marketArchivePath = "$marketAppPath\marketplace.zip"
 $unpackedFolderPath = "$marketAppPath\marketplace-dist"
 $Parameters = @{
-  # MODIFIED: Points to your custom Marketplace repository release
-  Uri             = 'https://github.com/GamerNation12/marketplace/releases/latest/download/marketplace.zip'
+  # MODIFIED: Now pulls the perfectly packaged zip from the official Spicetify API!
+  Uri             = 'https://github.com/spicetify/marketplace/releases/latest/download/marketplace.zip'
   UseBasicParsing = $true
   OutFile         = $marketArchivePath
 }
@@ -114,14 +113,14 @@ Invoke-WebRequest @Parameters
 
 Write-Host -Object 'Unzipping and installing...' -ForegroundColor 'Cyan'
 Expand-Archive -Path $marketArchivePath -DestinationPath $marketAppPath -Force
-Remove-Item -Path $marketArchivePath -Force
+Move-Item -Path "$unpackedFolderPath\*" -Destination $marketAppPath -Force
+Remove-Item -Path $marketArchivePath, $unpackedFolderPath -Force
 Invoke-Spicetify "config" "custom_apps" "spicetify-marketplace-" "-q"
 Invoke-Spicetify "config" "custom_apps" "marketplace"
 Invoke-Spicetify "config" "inject_css" "1" "replace_colors" "1"
 
 Write-Host -Object 'Downloading placeholder theme...' -ForegroundColor 'Cyan'
 $Parameters = @{
-  # MODIFIED: Points to your custom Marketplace color.ini file
   Uri             = 'https://raw.githubusercontent.com/GamerNation12/marketplace/main/resources/color.ini'
   UseBasicParsing = $true
   OutFile         = "$marketThemePath\color.ini"
