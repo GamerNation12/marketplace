@@ -39,12 +39,12 @@ export const CUSTOM_APP_PATH = "/marketplace";
 // Used in Card.tsx
 export const MAX_TAGS = 4;
 
-export const SNIPPETS_PAGE_URL = "https://github.com/spicetify/marketplace/blob/main/resources/snippets.json";
+export const SNIPPETS_PAGE_URL = "https://github.com/GamerNation12/marketplace/blob/main/resources/snippets.json";
 
-export const SNIPPETS_URL = "https://raw.githubusercontent.com/spicetify/marketplace/main/resources/snippets.json";
+export const SNIPPETS_URL = "https://raw.githubusercontent.com/GamerNation12/marketplace/main/resources/snippets.json";
 
-export const BLACKLIST_URL = "https://raw.githubusercontent.com/spicetify/marketplace/main/resources/blacklist.json";
+export const BLACKLIST_URL = "https://raw.githubusercontent.com/GamerNation12/marketplace/main/resources/blacklist.json";
 
-export const RELEASES_URL = "https://github.com/spicetify/marketplace/releases";
+export const RELEASES_URL = "https://github.com/GamerNation12/marketplace/releases";
 
-export const LATEST_RELEASE_URL = "https://api.github.com/repos/spicetify/marketplace/releases/latest";
+export const LATEST_RELEASE_URL = "https://api.github.com/repos/GamerNation12/marketplace/releases/latest";
