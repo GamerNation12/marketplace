@@ -10,6 +10,7 @@
   "scripts": {
     "build": "spicetify-creator",
     "build:local": "spicetify-creator --out=dist --minify",
+    "push": "pnpm run build:local && git add . && git commit -m \"Auto-update from VS Code\" && git push",
     "build:prod": "pnpm build:local && pnpm copy:docs",
     "copy:docs": "copyfiles README.md dist/",
     "lint": "biome check --write ./src",
