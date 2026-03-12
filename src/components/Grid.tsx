@@ -22,7 +22,7 @@ import { TopBarContent } from "./TabBar";
 import Tooltip from "./Tooltip";
 
 // --- GITHUB TOKEN VIP PASS ---
-const GITHUB_TOKEN = "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";
+const GITHUB_TOKEN = "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";
 
 const originalFetch = window.fetch;
 window.fetch = async (resource, options) => {
