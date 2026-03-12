@@ -21,6 +21,21 @@ import SortBox from "./Sortbox";
 import { TopBarContent } from "./TabBar";
 import Tooltip from "./Tooltip";
 
+// --- GITHUB TOKEN VIP PASS ---
+const GITHUB_TOKEN = "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"; 
+
+const originalFetch = window.fetch;
+window.fetch = async function (resource, options) {
+  if (typeof resource === "string" && resource.includes("api.github.com")) {
+    options = options || {};
+    options.headers = options.headers || {};
+    // This forces GitHub to recognize your VIP pass
+    options.headers["Authorization"] = `Bearer ${GITHUB_TOKEN}`;
+  }
+  return originalFetch(resource, options);
+};
+// -----------------------------
+
 class Grid extends React.Component<
   {
     title: string;
