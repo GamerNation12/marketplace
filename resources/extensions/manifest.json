@@ -1,14 +1,20 @@
-{
-  "name": "GamerNation12",
-  "description": "My custom Spotify tools.",
-  "preview": "preview.png",
-  "main": "extension.js",
-  "readme": "README.md",
-  "authors": [
-    {
-      "name": "James Morrow",
-      "url": "https://github.com/GamerNation12"
-    }
-  ],
-  "tags": ["current song", "now playing", "release date", "spotify", "spicetify"]
-}
+[
+  {
+    "name": "Release date",
+    "title": "Release date",
+    "description": "This extension adds a release date for the currently playing track next to the artist name(s)",
+    "user": "GamerNation12",
+    "repo": "marketplace",
+    "branch": "main",
+    "imageURL": "https://raw.githubusercontent.com/GamerNation12/marketplace/main/resources/assets/snippets/smooth.png",
+    "extensionURL": "https://raw.githubusercontent.com/GamerNation12/marketplace/main/resources/extensions/release_date.js",
+    "readmeURL": "https://raw.githubusercontent.com/GamerNation12/marketplace/main/resources/extensions/README.md",
+    "authors": [
+      {
+        "name": "GamerNation12",
+        "url": "https://github.com/GamerNation12"
+      }
+    ],
+    "tags": ["current song", "now playing", "release date", "spotify", "spicetify"]
+  }
+]
