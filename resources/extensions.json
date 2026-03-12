@@ -1,10 +1,14 @@
 [
   {
     "name": "Release date",
+    "title": "Release date",
     "description": "This extension adds a release date for the currently playing track next to the artist name(s)",
-    "preview": "resources/assets/snippets/smooth.png",
-    "main": "resources/extensions/release_date.js",
-    "readme": "resources/extensions/README.md",
+    "user": "GamerNation12",
+    "repo": "marketplace",
+    "branch": "main",
+    "imageURL": "https://raw.githubusercontent.com/GamerNation12/marketplace/main/resources/assets/snippets/smooth.png",
+    "extensionURL": "https://raw.githubusercontent.com/GamerNation12/marketplace/main/resources/extensions/release_date.js",
+    "readmeURL": "https://raw.githubusercontent.com/GamerNation12/marketplace/main/resources/extensions/README.md",
     "authors": [
       {
         "name": "GamerNation12",
