@@ -58,13 +58,11 @@ try {
     $result = Invoke-SpicetifyWithOutput "path" "userdata"
     if ($result.ExitCode -ne 0) {
         Write-Host -Object "Error from Spicetify:" -ForegroundColor 'Red'
-        Write-Host -Object $result.Output -ForegroundColor 'Red'
         return
     }
     $spiceUserDataPath = $result.Output
 } catch {
     Write-Host -Object "Error running Spicetify:" -ForegroundColor 'Red'
-    Write-Host -Object $_.Exception.Message.Trim() -ForegroundColor 'Red'
     return
 }
 
@@ -73,10 +71,10 @@ if (-not (Test-Path -Path $spiceUserDataPath -PathType 'Container' -ErrorAction 
 }
 
 # ------------------------------------------------------------------
-# FIX 1: Explicitly name your folders 'mgn-marketplace' to avoid clashes
+# PATH FIX: Match the folder name created by spicetify-creator
 # ------------------------------------------------------------------
-$marketAppPath = "$spiceUserDataPath\CustomApps\mgn-marketplace"
-$marketThemePath = "$spiceUserDataPath\Themes\mgn-marketplace"
+$marketAppPath = "$spiceUserDataPath\CustomApps\marketplace"
+$marketThemePath = "$spiceUserDataPath\Themes\marketplace"
 
 $isThemeInstalled = $(
     Invoke-Spicetify "path" "-s" | Out-Null
@@ -85,29 +83,19 @@ $isThemeInstalled = $(
 $currentTheme = (Invoke-SpicetifyWithOutput "config" "current_theme").Output
 $setTheme = $true
 
-Write-Host -Object 'Removing and creating MGN Marketplace folders...' -ForegroundColor 'Cyan'
+Write-Host -Object 'Cleaning and creating Marketplace folders...' -ForegroundColor 'Cyan'
 try {
-    $result = Invoke-SpicetifyWithOutput "path" "userdata"
-    if ($result.ExitCode -ne 0) {
-        Write-Host -Object "Error: Failed to get Spicetify path. Details:" -ForegroundColor 'Red'
-        Write-Host -Object $result.Output -ForegroundColor 'Red'
-        return
-    }
-
-    # Also clean up the original 'marketplace' folder just in case
-    Remove-Item -Path "$spiceUserDataPath\CustomApps\marketplace" -Recurse -Force -ErrorAction 'SilentlyContinue' | Out-Null
+    # Remove old/incorrect folder names to prevent clashes
+    Remove-Item -Path "$spiceUserDataPath\CustomApps\mgn-marketplace" -Recurse -Force -ErrorAction 'SilentlyContinue' | Out-Null
     Remove-Item -Path $marketAppPath, $marketThemePath -Recurse -Force -ErrorAction 'SilentlyContinue' | Out-Null
     
-    if (-not (New-Item -Path $marketAppPath, $marketThemePath -ItemType 'Directory' -Force -ErrorAction 'Stop')) {
-        Write-Host -Object "Error: Failed to create Marketplace directories." -ForegroundColor 'Red'
-        return
-    }
+    New-Item -Path $marketAppPath, $marketThemePath -ItemType 'Directory' -Force -ErrorAction 'Stop' | Out-Null
 } catch {
-    Write-Host -Object "Error: $($_.Exception.Message.Trim())" -ForegroundColor 'Red'
+    Write-Host -Object "Error creating directories: $($_.Exception.Message.Trim())" -ForegroundColor 'Red'
     return
 }
 
-Write-Host -Object 'Downloading MGN Marketplace...' -ForegroundColor 'Cyan'
+Write-Host -Object 'Downloading Marketplace...' -ForegroundColor 'Cyan'
 $marketArchivePath = "$marketAppPath\marketplace.zip"
 $Parameters = @{
   Uri             = 'https://github.com/GamerNation12/marketplace/releases/latest/download/marketplace.zip'
@@ -121,11 +109,11 @@ Expand-Archive -Path $marketArchivePath -DestinationPath $marketAppPath -Force
 Remove-Item -Path $marketArchivePath -Force
 
 # ------------------------------------------------------------------
-# FIX 2: Actively remove the official marketplace, then add yours
+# REGISTRATION FIX: Remove ghost extensions and set the App
 # ------------------------------------------------------------------
-Invoke-Spicetify "config" "custom_apps" "spicetify-marketplace-" "-q"
-Invoke-Spicetify "config" "custom_apps" "marketplace-" "-q"
-Invoke-Spicetify "config" "custom_apps" "mgn-marketplace"
+Write-Host -Object 'Registering Custom App...' -ForegroundColor 'Cyan'
+Invoke-Spicetify "config" "extensions" "marketplace-" "mgn-marketplace-" "-q"
+Invoke-Spicetify "config" "custom_apps" "spicetify-marketplace-" "mgn-marketplace-" "marketplace"
 Invoke-Spicetify "config" "inject_css" "1" "replace_colors" "1"
 
 Write-Host -Object 'Downloading placeholder theme...' -ForegroundColor 'Cyan'
@@ -136,26 +124,21 @@ $Parameters = @{
 }
 Invoke-WebRequest @Parameters
 
-Write-Host -Object 'Applying...' -ForegroundColor 'Cyan'
-if ($isThemeInstalled -and ($currentTheme -ne 'mgn-marketplace')) {
-    $Host.UI.RawUI.Flushinputbuffer()
+Write-Host -Object 'Applying changes...' -ForegroundColor 'Cyan'
+if ($isThemeInstalled -and ($currentTheme -ne 'marketplace')) {
     $choice = $Host.UI.PromptForChoice(
         'Local theme found',
-        'Do you want to replace it with a placeholder to install themes from the Marketplace?',
+        'Replace with MGN Marketplace placeholder theme?',
         ('&Yes', '&No'),
         0
     )
     if ($choice -eq 1) { $setTheme = $false }
 }
 
-# ------------------------------------------------------------------
-# FIX 3: Set current theme to mgn-marketplace
-# ------------------------------------------------------------------
 if ($setTheme) {
-    Invoke-Spicetify "config" "current_theme" "mgn-marketplace"
+    Invoke-Spicetify "config" "current_theme" "marketplace"
 }
-Invoke-Spicetify "backup"
+
 Invoke-Spicetify "apply"
 
-Write-Host -Object 'Done!' -ForegroundColor 'Green'
-Write-Host -Object 'If nothing has happened, check the messages above for errors'
+Write-Host -Object 'Done! Restarting Spotify...' -ForegroundColor 'Green'
