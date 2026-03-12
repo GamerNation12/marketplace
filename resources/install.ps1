@@ -71,8 +71,12 @@ try {
 if (-not (Test-Path -Path $spiceUserDataPath -PathType 'Container' -ErrorAction 'SilentlyContinue')) {
     $spiceUserDataPath = "$env:APPDATA\spicetify"
 }
-$marketAppPath = "$spiceUserDataPath\CustomApps\marketplace"
-$marketThemePath = "$spiceUserDataPath\Themes\marketplace"
+
+# ------------------------------------------------------------------
+# FIX 1: Explicitly name your folders 'mgn-marketplace' to avoid clashes
+# ------------------------------------------------------------------
+$marketAppPath = "$spiceUserDataPath\CustomApps\mgn-marketplace"
+$marketThemePath = "$spiceUserDataPath\Themes\mgn-marketplace"
 
 $isThemeInstalled = $(
     Invoke-Spicetify "path" "-s" | Out-Null
@@ -81,7 +85,7 @@ $isThemeInstalled = $(
 $currentTheme = (Invoke-SpicetifyWithOutput "config" "current_theme").Output
 $setTheme = $true
 
-Write-Host -Object 'Removing and creating Marketplace folders...' -ForegroundColor 'Cyan'
+Write-Host -Object 'Removing and creating MGN Marketplace folders...' -ForegroundColor 'Cyan'
 try {
     $result = Invoke-SpicetifyWithOutput "path" "userdata"
     if ($result.ExitCode -ne 0) {
@@ -90,7 +94,10 @@ try {
         return
     }
 
+    # Also clean up the original 'marketplace' folder just in case
+    Remove-Item -Path "$spiceUserDataPath\CustomApps\marketplace" -Recurse -Force -ErrorAction 'SilentlyContinue' | Out-Null
     Remove-Item -Path $marketAppPath, $marketThemePath -Recurse -Force -ErrorAction 'SilentlyContinue' | Out-Null
+    
     if (-not (New-Item -Path $marketAppPath, $marketThemePath -ItemType 'Directory' -Force -ErrorAction 'Stop')) {
         Write-Host -Object "Error: Failed to create Marketplace directories." -ForegroundColor 'Red'
         return
@@ -100,10 +107,9 @@ try {
     return
 }
 
-Write-Host -Object 'Downloading Marketplace...' -ForegroundColor 'Cyan'
+Write-Host -Object 'Downloading MGN Marketplace...' -ForegroundColor 'Cyan'
 $marketArchivePath = "$marketAppPath\marketplace.zip"
 $Parameters = @{
-  # NOW POINTING TO YOUR FORK!
   Uri             = 'https://github.com/GamerNation12/marketplace/releases/latest/download/marketplace.zip'
   UseBasicParsing = $true
   OutFile         = $marketArchivePath
@@ -111,17 +117,19 @@ $Parameters = @{
 Invoke-WebRequest @Parameters
 
 Write-Host -Object 'Unzipping and installing...' -ForegroundColor 'Cyan'
-# MODIFIED: Extracts directly, no more marketplace-dist folder crashing!
 Expand-Archive -Path $marketArchivePath -DestinationPath $marketAppPath -Force
 Remove-Item -Path $marketArchivePath -Force
 
+# ------------------------------------------------------------------
+# FIX 2: Actively remove the official marketplace, then add yours
+# ------------------------------------------------------------------
 Invoke-Spicetify "config" "custom_apps" "spicetify-marketplace-" "-q"
-Invoke-Spicetify "config" "custom_apps" "marketplace"
+Invoke-Spicetify "config" "custom_apps" "marketplace-" "-q"
+Invoke-Spicetify "config" "custom_apps" "mgn-marketplace"
 Invoke-Spicetify "config" "inject_css" "1" "replace_colors" "1"
 
 Write-Host -Object 'Downloading placeholder theme...' -ForegroundColor 'Cyan'
 $Parameters = @{
-  # POINTING TO YOUR FORK!
   Uri             = 'https://raw.githubusercontent.com/GamerNation12/marketplace/main/resources/color.ini'
   UseBasicParsing = $true
   OutFile         = "$marketThemePath\color.ini"
@@ -129,7 +137,7 @@ $Parameters = @{
 Invoke-WebRequest @Parameters
 
 Write-Host -Object 'Applying...' -ForegroundColor 'Cyan'
-if ($isThemeInstalled -and ($currentTheme -ne 'marketplace')) {
+if ($isThemeInstalled -and ($currentTheme -ne 'mgn-marketplace')) {
     $Host.UI.RawUI.Flushinputbuffer()
     $choice = $Host.UI.PromptForChoice(
         'Local theme found',
@@ -139,8 +147,12 @@ if ($isThemeInstalled -and ($currentTheme -ne 'marketplace')) {
     )
     if ($choice -eq 1) { $setTheme = $false }
 }
+
+# ------------------------------------------------------------------
+# FIX 3: Set current theme to mgn-marketplace
+# ------------------------------------------------------------------
 if ($setTheme) {
-    Invoke-Spicetify "config" "current_theme" "marketplace"
+    Invoke-Spicetify "config" "current_theme" "mgn-marketplace"
 }
 Invoke-Spicetify "backup"
 Invoke-Spicetify "apply"
