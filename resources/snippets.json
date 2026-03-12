@@ -547,7 +547,7 @@
   },
 {
     "title": "Smooth Progress Bar",
-    "description": "Makes the progress bar smooth like it should be using CSS Houdini.",
+    "description": "Makes the progress bar smooth like it should be 😁",
     "code": "@property --progress-bar-transform {\n  syntax: '<percentage>';\n  inherits: true;\n  initial-value: 0%;\n}\n\n.x-progressBar-foreground {\n  transition: --progress-bar-transform 1s linear !important;\n}\n\n.x-progressBar-foreground:active,\n.x-progressBar-background:active .x-progressBar-foreground,\n.progress-bar--isDragging .x-progressBar-foreground {\n  transition: none !important;\n}",
     "preview": "resources/assets/snippets/smooth.png"
   }
