@@ -557,4 +557,11 @@
     "code": ".main-globalNav-browseButtonWrapper { display: none !important }",
     "preview": "resources/assets/snippets/remove-browse.png"
   }
+  {
+    "title": "Remove Connect Bar 2.0",
+    "description": "Removes the green connect bar when listening on other devices",
+    "code": " div.MZd_PqzVQOdrbpd6ircZ, [class*="connectBar"] { display: none !important; }",
+    "preview": "resources/assets/snippets/remove-connect-bar-fix.png"
+  }
+
 ]
